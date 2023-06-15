@@ -1,0 +1,31 @@
+*{
+  margin: 0;
+  border: 0;
+  box-sizing: border-box;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .form-control {
+    flex: 1;
+    margin-right: 10px;
+  }
+
+  .border{
+    /* border-radius: 70%; */
+    /* background-image: url("../assets/images/chatbg.jpg"); */
+    
+  }
+  .chat_window{
+    height:80%;
+    
+
+
+  }
+  .bgchat{
+    background-image: url("../assets/images/chatbg.jpg");
+    background-color:"redz"
+  }
