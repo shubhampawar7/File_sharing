@@ -8,62 +8,59 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import ChatSection from './ChatSection';
 import Swal from 'sweetalert2';
+import { API_URL } from '../config/config';
+import io from "socket.io-client";
+
+var socket;
+
 
 
 const Dashboard = () => {
     const [users, setUser] = useState([]);
     const [searchuser, setSearchUser] = useState('');
     const [filteredUsers, setFilteredUsers] = useState(users);
-    console.log(filteredUsers,"filtered usersssss");
-    const [selecteduserid, setSelectedUserid] = useState();
     const [selectedusername, setSelectedUsername] = useState("You");
     const [fileData, setFileData] = useState('');
     const [file, setFile] = useState('');
-    const [fileName, setFileName] = useState('');
+    const [fileName, setFileName] = useState();
     const [FilesData, setFilesData] = useState([]);
-    const [message, setMessage] = useState([]);
+    const [message, setMessage] = useState();
+    const[messagetime,setMessageTime]=useState();
     const [emptyinput, setEmptyInput] = useState("");
-    const [user,setCurrentUser]=useState();
-    const [singleuserfiles,setSingleUserFiles]=useState([])
-    // console.log(singleuserfiles,"users data files");
-
-
-
-    console.log(user,"logged in");
-    // console.log(updated,"sdfsdf");
-
-    const handleChange = (e) => {
-        setEmptyInput(e.target.value)
-    }
-
-    const handleKeyDown = (event) => {
-        if (event.key === 'Enter') {
-            setMessage(event.target.value)
-            setEmptyInput("")
-        }
-    };
+    const [user, setCurrentUser] = useState();
+    const [selecteduserid, setSelectedUserid] = useState();
+    const [singleuserfiles, setSingleUserFiles] = useState([])
+    const [deletefile, setDeleteFile] = useState("");
+    const [currentusername,setCurrentUserName]=useState()
+  
 
     // const[allfiles,setFile]=useState();
     const currentUser = localStorage.getItem("email")
-    console.log(currentUser);
+    useEffect(() => {
+        socket = io(API_URL);
+        socket.emit("join chat", selecteduserid)  //singleuserfiles
+        // socket.on("connection", () => setsocketConnected(true));
+        getFile();
+
+
+    }, [selecteduserid])
 
 
 
-    // console.log(currentUser,"current user");
-    // console.log(selecteduserid,"selected userid");
-    // console.log(allfiles,"all files data");
 
     const chat = (e, user) => {
         e.preventDefault();
         if (currentUser === user.email) {
-            setSelectedUsername("You")
             setSelectedUserid(user._id)
+            setSelectedUsername("You")
             // setCurrentUser(user._id);
+            console.log("chat():", user._id, "name", user.name);
+
         }
         else {
             setSelectedUserid(user._id)
             setSelectedUsername(user.name)
-            console.log(user._id, "name", user.name);
+            console.log("chat():", user._id, "name", user.name);
 
         }
 
@@ -72,23 +69,23 @@ const Dashboard = () => {
 
     const getAllUsers = () => {
 
-            ApiService.get("/data", null, null, (res, err) => {
-                if (res !== null) {
-                    console.log(res.data, "get all user",filteredUsers);
-                    setUser(res.data)
-                    setFilteredUsers(res.data);
-                    console.log(res.data,"d");
+        ApiService.get("/data", null, null, (res, err) => {
+            if (res !== null) {
+                console.log("getAllUsers", res.data, "get all user", filteredUsers);
+                setUser(res.data)
+                setFilteredUsers(res.data);
+             
 
-                   
 
-                }
-                else {
-                    console.log(err.message);
-                }
-            })
 
-        
-       
+            }
+            else {
+                console.log("getAllUsers", err.message);
+            }
+        })
+
+
+
     }
     const handleFileChange = (event) => {
         event.preventDefault();
@@ -97,70 +94,137 @@ const Dashboard = () => {
         setFileName(file.name)
     };
 
+    const handleChange = (e) => {
+        setEmptyInput(e.target.value);
+        setMessage(e.target.value)
+
+
+    }
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            setMessage(event.target.value)
+
+            const date = new Date();
+            const message_time = date.getHours() + ":" + date.getMinutes();
+            setMessageTime(message_time)
+            setEmptyInput("")
+        }
+        
+       
+    };
+
     const handleFile = (e) => {
         e.preventDefault();
         const formData = new FormData();
-        formData.append("file", file);
-        formData.append("name", fileName)
-        formData.append("uploadedBy", user);
-        formData.append("sharedWith", selecteduserid)
-        console.log(file.name);
+        const date = new Date();
+        const current_time = date.getHours() + ":" + date.getMinutes();
+
+        socket.emit("new message",message)
+
+
+
+        // console.log("handleFile",file.name);
+        //Add message
+        if (message) {
+            formData.append("uploadedBy",user);
+            formData.append("uploadedBy",currentusername);    
+            formData.append("sharedWith", selecteduserid);
+            formData.append("current_time", current_time);
+            formData.append("message",message );
+            setMessage("")
+        }
+        if(file){
+            formData.append("file", file);
+            formData.append("name", fileName)
+            formData.append("uploadedBy",user);
+            formData.append("uploadedBy",currentusername);
+    
+            formData.append("sharedWith", selecteduserid)
+            formData.append("current_time", current_time)
+            setFile("")
+            setFileName("")
+
+
+        }    
+
+      
+
         ApiService.post("/upload", formData, null, (res, err) => {
             if (res !== null) {
-                console.log(res, "file res");
-                Swal.fire(
-                    'Uploaded Successfully ',
-                    '',
-                    'success'
-                  )
-                  getAllFiles();
-                  getFile();
+                // if (message.length < 0) {
+                //     Swal.fire(
+                //         'Uploaded Successfully ',
+                //         '',
+                //         'success'
+                //     )
 
+                // }
+                // else{
+                //     getAllFiles();
+                //     getFile();
+                // }
+                e.target.reset();
+
+
+                    getAllFiles();
+                    getFile();
               
+
+
             }
             else {
                 console.log(err.message);
+                res.json("file not uploaded")
             }
         })
     }
-
-  const  getAllFiles=()=>{
-        ApiService.get(`/allfiles/`, null, null, (res, err) => {
-            if (res !== null) {
-                console.log(res, "filedata res");
-                // setFilesData(res)
-            }
-            else {
-                console.log(err.message);
-            }
-        })
-    }
-
-    const getcurrUser=()=>{
-        filteredUsers.map((user)=>{
-            if(currentUser===user.email){
-                setCurrentUser(user._id);
-                console.log(user._id,"dd");
-            }
-        })
-    }
-
  
 
-    const getFile=()=>{
-        // console.log(user,"get file user");
-        ApiService.get(`/allfiles/${selecteduserid}`,{
-            params:{
-                uploadedBy:user,
+
+    const getAllFiles = () => {
+
+        ApiService.get(`/allfiles/`, null, null, (res, err) => {
+            if (res !== null) {
+                setFilesData(res)
+                
             }
-        },null,(res,err)=>{
-            if(res!==null){
-                console.log(res,"single file");            
+            else {
+                console.log("getAllFiles", err.message);
+            }
+        })
+    }
+
+    const getcurrUser = () => {
+        filteredUsers.map((user) => {
+            if (currentUser === user.email) {
+                setCurrentUser(user._id);
+                setCurrentUserName(user.name)
+                console.log("getcurrUser", user._id, user.name);
+            }
+        })
+    }
+
+
+
+    const getFile = () => {
+        setMessage("")
+
+        // console.log(getFile,"get file user");
+        ApiService.get(`/allfiles/${selecteduserid}`, {
+            params: {
+                uploadedBy: user,
+            }
+        }, null, (res, err) => {
+            if (res !== null) {
+                console.log("getFile", res, "single file");
 
                 setSingleUserFiles(res)
+                setDeleteFile(false)
+                setFileName("")
             }
-            else{
-                console.log(err.message);
+            else {
+                console.log("getFile", err.message);
             }
         })
 
@@ -170,18 +234,19 @@ const Dashboard = () => {
         getAllUsers();
         // getAllFiles();
 
-    },[])
-    
+    }, [])
+
     useEffect(() => {
         const filtered = users.filter(user => user.name.toLowerCase().includes(searchuser.toLowerCase()));
         setFilteredUsers(filtered);
     }, [searchuser])
 
-    useEffect(()=>{
+    useEffect(() => {
         getFile();
         getcurrUser();
 
-    },[selecteduserid,filteredUsers])
+    }, [selecteduserid, filteredUsers])
+
 
 
     return (
@@ -189,10 +254,10 @@ const Dashboard = () => {
             <Header setSearchUser={setSearchUser} currentUser={currentUser} />
 
             {/* section */}
-            <div class="row  w-100 border " style={{ height: "88vh" }}>
-                <Sidebar chat={chat} filteredUsers={filteredUsers} currentUser={currentUser} />
+            <div class="row mx-0   chat-section" >
+                <Sidebar   setSearchUser={setSearchUser} chat={chat} filteredUsers={filteredUsers} currentUser={currentUser} />
 
-                <ChatSection selectedusername={selectedusername} message={message} handleFile={handleFile} handleChange={handleChange} handleFileChange={handleFileChange} handleKeyDown={handleKeyDown} emptyinput={emptyinput} FilesData={FilesData} singleuserfiles={singleuserfiles} />
+                <ChatSection  users={users} fileName={fileName} selecteduserid={selecteduserid}  currentusername={currentusername}  setDeleteFile={setDeleteFile} deletefile={deletefile} getAllFiles={getAllFiles} selectedusername={selectedusername} message={message} handleFile={handleFile} handleChange={handleChange} handleFileChange={handleFileChange} handleKeyDown={handleKeyDown} emptyinput={emptyinput} FilesData={FilesData} singleuserfiles={singleuserfiles} getFile={getFile} messagetime={messagetime} />
 
 
             </div>

@@ -41,7 +41,6 @@ const Adduser=async (req,res)=>{
     try {
         const email=req.body.email;
         const emailExist=await User.find({email:email})
-        console.log(emailExist.length);
         if(emailExist.length==1){
             return res.status(200).json({msg:"email is already exists"});
 
@@ -89,7 +88,7 @@ const sendverifyMail=async(name,email,user_id)=>{
         });
         const mailOptions={
             from:config.email,
-            to:"pshubham7000@gmail.com",
+            to:email,
             subject:"For verification mail ",
             // html: `<h1>Hi ,`+name+`</h1><p>please click here to verify <a href="http://127.0.0.1:7000/verify?id=`+user_id+`" >your mail</a></p>`
             html: `<h1>Hi ,`+name+`</h1><p>please click here to verify <a href="http://127.0.0.1:7000/verify?id=`+myObjectIdString+`" >your mail</a></p>`
@@ -389,21 +388,44 @@ const resetpass=async(req,res)=>{
 const Upload=async(req,res)=>{  
 
 
-    console.log(req.file,"upp");
     console.log(req.body,"body");
-    // res.json(req.file)
-    const file = new File({
-        name: req.body.name,
-        // file: {data:fs.readFileSync('./uploads'+req.filename)},
-        uploadedBy: req.body.uploadedBy,
-        sharedWith: req.body.sharedWith,
-        path:req.file.path
-      });
-    console.log(file);
+    
+
+   
+  
+    
+   
+    
       try {
-        const newFile = await file.save();
-        res.status(201).json(newFile);
-        console.log("file saved successfully");
+        if(req.body.name){
+        
+            const file = new File({
+                name: req.body.name,
+                // file: {data:fs.readFileSync('./uploads'+req.filename)},
+                uploadedBy: req.body.uploadedBy,
+                sharedWith: req.body.sharedWith,
+                path:req.file.path,
+                current_time:req.body.current_time        
+              });
+              const newFile = await file.save();
+              res.status(201).json(newFile);
+              console.log("file saved successfully");
+        
+            
+        }
+        else{
+            const file = new File({
+                message:req.body.message,
+                uploadedBy: req.body.uploadedBy,
+                sharedWith: req.body.sharedWith,
+                current_time:req.body.current_time        
+              });
+              const newFile = await file.save();
+              res.status(201).json(newFile);
+              console.log("file saved successfully");
+    
+        }
+     
       } catch (err) {
         res.status(400).json({ message: err.message });
       }
@@ -414,7 +436,7 @@ const Upload=async(req,res)=>{
 const FilesAllData=async(req,res)=>{
     try {
         const filedata=await File.find();
-        console.log(filedata,"filedata api data");
+        // console.log(filedata,"filedata api data");
         res.status(200).json(filedata);
     } catch (error) {
         console.log(error.message);
@@ -426,10 +448,17 @@ const FileSingleData=async(req,res)=>{
         const id=req.params.id
         const uploadedBy=req.query.uploadedBy;
         console.log(uploadedBy  ,"cuurr");
-        // const filedata=await File.find({$and:[{uploadedBy:user},{sharedWith:id}]});
-        const filedata=await File.find({sharedWith:id});
+        // const filedata=await File.find({$and:[{uploadedBy:uploadedBy},{sharedWith:id}],$or[{uploadedBy:id},{sharedWith:uploadedBy}]});
+        // const filedata=await File.find({sharedWith:id});
 
-        console.log(filedata,"filedata api data");
+        const filedata=await File.find({$or:[
+                                                {$and:[{uploadedBy:uploadedBy},{sharedWith:id}]},
+                                                {$and:[{uploadedBy:id},{sharedWith:uploadedBy}]},
+
+                                            ]});
+
+
+        // console.log(filedata,"filedata api data");
         res.status(200).json(filedata);
     } catch (error) {
         console.log(error.message);
@@ -460,6 +489,24 @@ const DownloadFile=(req,res)=>{
     }
 }
 
+const DeleteFile=async(req,res)=>{
+    
+    const file=`uploadfiles/${req.params.filename}`;
+    const DelFile = await File.findById(req.query.fileId);
+    const DelFileData=await File.findByIdAndRemove(DelFile);
+    console.log(DelFileData,"file delete data");
+
+    console.log(req.query.fileId,"del");
+    fs.unlink(file,(err)=>{
+        if(err){
+            console.log("error while deleting file");
+            res.status(500).send("error while deleting file")
+        }
+        else{
+            res.send("File deleted successfully")
+        }
+    })
+}
 
 
 
@@ -490,7 +537,7 @@ const DownloadFile=(req,res)=>{
 
 
 
-module.exports={Getdata,Adduser,FindUser,UpdateUser,verifyMail,verifyLogin,userlogout,DeleteUser,forgotpass,forgotpasswordLoad,resetpass,Upload,FilesAllData,FileSingleData,DownloadFile}
+module.exports={Getdata,Adduser,FindUser,UpdateUser,verifyMail,verifyLogin,userlogout,DeleteUser,forgotpass,forgotpasswordLoad,resetpass,Upload,FilesAllData,FileSingleData,DownloadFile,DeleteFile}
 
 
 

@@ -2,6 +2,10 @@
   margin: 0;
   border: 0;
   box-sizing: border-box;
+  font-family: 'Belanosima', sans-serif;
+  font-family: 'Hind Madurai', sans-serif;
+  font-family: 'Kanit', sans-serif;
+  font-family: 'Lexend Peta', sans-serif;
 }
 
 .search-container {
@@ -12,6 +16,12 @@
   .form-control {
     flex: 1;
     margin-right: 10px;
+    font-family: 'Belanosima', sans-serif;
+    font-family: 'Hind Madurai', sans-serif;
+    font-family: 'Kanit', sans-serif;
+    font-family: 'Lexend Peta', sans-serif;
+    font-family: 'Mukta', sans-serif;
+    font-family: 'PT Sans', sans-serif;
   }
 
   .border{
@@ -29,3 +39,24 @@
     background-image: url("../assets/images/chatbg.jpg");
     background-color:"redz"
   }
+  .chat-section{
+    /* min-height: 92vh; */
+    height: 87vh;
+    width: 100%;    
+}
+
+@media only screen and  (max-width:768px) {
+  .chat-section{
+    height: 100vh;
+    width: 100%;    
+}
+
+}
+
+@media only screen and  (max-width:992px) {
+
+}
+
+@media only screen and  (max-width:1200px) {
+
+}

@@ -1,45 +1,48 @@
 import React, { useState } from 'react'
 import ApiService from '../middleware/ApiService';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate,Navigate } from 'react-router-dom';
+import Dashboard from './Dashboard';
 
 
 export const Login = () => {
-  
-    const [verifyMail,setVerifyMail]=useState();
-    const [validMail,setValidMail]=useState();
-    const [validPass,setValidPass]=useState();
-    const navigate=useNavigate();
 
-    const handleSubmit=(event)=>{
+    const [verifyMail, setVerifyMail] = useState();
+    const [validMail, setValidMail] = useState();
+    const [validPass, setValidPass] = useState();
+    const navigate = useNavigate();
+    const getemail = localStorage.getItem("email")
+
+
+    const handleSubmit = (event) => {
         event.preventDefault();
-        const {mail,pass}=document.forms[0];
-        const payload={
-            email:mail.value,
-            password:pass.value
+        const { mail, pass } = document.forms[0];
+        const payload = {
+            email: mail.value,
+            password: pass.value
         }
-        ApiService.post("/login",payload,null,(res,err)=>{
-            if(res!==null){
-                console.log(res,"login res");
+        ApiService.post("/login", payload, null, (res, err) => {
+            if (res !== null) {
                 setVerifyMail(res.msg)
                 setValidMail(res.emailmsg)
                 setValidPass(res.passwordmsg)
                 // setCurrentUser(res.user.email)
-                localStorage.setItem('email',res.user.email);
+                localStorage.setItem('email', res.user.email);
 
-                if(res.user){
+                if (res.user) {
                     navigate("/dashboard")
                 }
             }
-            else{
-                console.log(err.message,"error while login");
+            else {
+                console.log("handleSubmit",err.message, "error while login");
             }
         })
     }
     return (
         <>
+         {                                    getemail && getemail ? (<Navigate to="/dashboard" element={<Dashboard />} />) : (
             <div className='container-fluid bg-dark'>
 
-                <section class="vh-100 bg-image" 
+                <section class="vh-100 bg-image"
                 // style={{ backgroundImage: "url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');" }}
                 >
                     <div class="mask d-flex align-items-center h-100 gradient-custom-3">
@@ -47,7 +50,7 @@ export const Login = () => {
                             <div class="row d-flex justify-content-center align-items-center h-100">
                                 <div class="col-12 col-md-9 col-lg-7 col-xl-6">
                                     <div class="card"
-                                                                        >
+                                    >
                                         <div class="card-body p-5">
                                             <h2 class="text-uppercase text-center mb-5">Login</h2>
 
@@ -80,10 +83,8 @@ export const Login = () => {
 
 
 
-                                                <p class="text-center text-muted mt-5 mb-0">Have already an account? <a href="\signup"
-                                                    class="fw-bold text-body"><u>Register</u></a></p>
-                                                    <p class="text-center"><a href="\forgotpass"
-                                                    class="fw-bold text-body"><u>Fogot Password?</u></a></p>
+                                                <p class="text-center text-muted mt-5 mb-0">Have already an account? <a href="\signup" class="fw-bold text-body"><u>Register</u></a></p>
+                                                <p class="text-center"><a href="\forgotpass" class="fw-bold text-body"><u>Fogot Password?</u></a></p>
 
                                             </form>
 
@@ -100,6 +101,7 @@ export const Login = () => {
 
 
             </div>
+                                )} 
 
         </>
     )

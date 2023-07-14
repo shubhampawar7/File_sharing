@@ -3,17 +3,24 @@ const mongoose = require('mongoose');
 const fileSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    // required: true
+  },
+  message:{
+    type:String
   },
  path:{
   type:String,
-  required:true
+  // required:true
 
  },
+ current_time:{
+  type:String,
+  required:true
+ },
   uploadedBy: {
-    type: String,
+    type: [],
     ref: 'User',
-    required: true
+    // required: true
   },
   sharedWith: {
     type: String,
@@ -26,7 +33,7 @@ const fileSchema = new mongoose.Schema({
   },
   updated_at: {
     type: Date,
-    default: Date.now
+    default: new Date()
   }
 });
 

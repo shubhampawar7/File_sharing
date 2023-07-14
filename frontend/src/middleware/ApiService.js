@@ -25,7 +25,22 @@ let ApiService={
         .catch((error)=>{
             console.log(error.message);
         })
+    },
+
+    del:(url,payload,headers,callback)=>{
+        axios.delete(API_URL+url,{
+            params:payload,
+            
+        })
+        .then((responseData)=>{
+            callback && callback(responseData.data,null);
+        })
+        .catch((error)=>{
+            console.log(error.message);
+        })
+
     }
+
 
 }
 

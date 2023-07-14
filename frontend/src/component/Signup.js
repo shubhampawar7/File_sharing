@@ -18,8 +18,8 @@ const handleSubmit=(event)=>{
   };
   ApiService.post("/signup",payload,null,(res,err)=>{
     if(res!==null){
-      console.log(res.msg,"api res");
-      console.log(res.user,"res user");
+      // console.log(res.msg,"api res");
+      // console.log(res.user,"res user");
       setMailExist(res.msg)
       if(res.user){
         Swal.fire(
@@ -35,7 +35,7 @@ const handleSubmit=(event)=>{
 
     }
     else{
-      console.log(err);
+      console.log("handleSubmit",err.message);
     }
   })
 }
@@ -48,11 +48,11 @@ const handleSubmit=(event)=>{
   <div class="mask d-flex align-items-center h-100 gradient-custom-3">
     <div class="container h-100">
       <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6 ">
           <div class="card" 
         //   style="border-radius: 15px;"
           >
-            <div class="card-body p-5">
+            <div class="card-body p-4">
               <h2 class="text-uppercase text-center mb-5">Create an account</h2>
 
               <form onSubmit={handleSubmit}>

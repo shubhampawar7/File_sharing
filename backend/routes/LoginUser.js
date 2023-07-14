@@ -5,6 +5,7 @@ const session=require("express-session")
 const config=require("../config/config")
 const auth=require("../middlewares/auth")
 const multer = require("multer");
+const fs=require("fs");
 
 
 // router.use(session({secretconfig.sessionSecret}))
@@ -14,7 +15,7 @@ const storage=multer.diskStorage({
         return cb(null,"uploadfiles/")
     },
     filename:(req,file,cb)=>{
-        return cb(null,file.originalname)
+        return cb(null, file.originalname)
     }
 })
 
@@ -49,6 +50,10 @@ router.get("/download/:filename",(req, res) => {
     const file = `uploadfiles/${req.params.filename}`;
     res.download(file);
   });
+
+router.delete("/delete/:filename",UserController.DeleteFile)
+
+
 
 
 // router.get("/",UserController.Getdata)

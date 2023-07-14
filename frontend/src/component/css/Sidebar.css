@@ -1,0 +1,172 @@
+.sidebar {
+    border-radius: 5px;
+    /* background-color:cadetblue; */
+    background-color: #3f0e40;
+    max-height: 92vh;
+    height: auto;
+}
+.user-text{
+color: white;
+/* font-family: 'Belanosima', sans-serif;
+font-family: 'Hind Madurai', sans-serif;
+font-family: 'Kanit', sans-serif;
+font-family: 'Lexend Peta', sans-serif;
+font-family: 'Mukta', sans-serif;
+font-family: 'Poppins', sans-serif;
+font-family: 'PT Sans', sans-serif; */
+margin-top: 10px;
+font-family: auto;
+font-variant: all-petite-caps;
+font-weight: 900;
+font-variant-caps: all-small-caps;
+
+
+}
+
+
+.text{
+    color:white;
+}
+.user-btn {
+    height: 50px;
+    /* box-shadow: 5px 5px 20px  rgb(28, 28, 32); */
+    /* border-radius: 10px; */
+    /* background-color: rgb(140, 136, 144); */
+    font-family: 'Belanosima', sans-serif;
+    font-family: 'Hind Madurai', sans-serif;
+    font-family: 'Lexend Peta', sans-serif;
+    margin: 6px 3px;
+    display: flex;
+    justify-content: left;
+  
+}
+
+.user-button{
+    display: flex;
+  justify-content: left;
+  color: white;
+  /* font-family: 'Arimo', sans-serif;
+  font-family: 'Belanosima', sans-serif;
+  font-family: 'Hind Madurai', sans-serif;
+  font-family: 'Kanit', sans-serif;
+  font-family: 'Lexend Peta', sans-serif;
+  font-family: 'Mukta', sans-serif;
+  font-family: 'Playfair Display', serif;
+  font-family: 'Poppins', sans-serif;
+  font-family: 'PT Sans', sans-serif;
+  font-family: 'Teko', sans-serif; */
+  font-family: auto;
+  font-weight: 700;
+  letter-spacing: 1px;
+
+
+  /* font-size: 21px; */
+  padding: 0px;
+  /* font-size: 1vw; */
+  
+}
+
+
+.user-btn:hover {
+    /* background-color: #68a8ec; */
+    background-color: #e6efef45;
+    border-radius: 10px;    
+    /* border: 0px solid #68a8ec; */
+    /* box-shadow: 0px 5px 5px rgb(128, 114, 235); */
+    color: #fff;
+    transform: translateX(2px); 
+
+    
+  }
+  .search-bar{
+    display: flex;
+    justify-content: center;
+  }
+  .search-icon{
+position: relative;
+left: -45px;
+  }
+
+ 
+  .user-image{
+    
+    border-radius: 25px;
+    width: 45px;
+    height: 30px;
+    margin: 10px 3px;
+  }
+  .user-image:hover{
+    border: 1px solid black;
+
+  }
+  .user-list{
+    overflow: hidden;
+  }
+
+  @media only screen and  (max-width:576px) {
+    .user-button{
+      font-size: 30px;
+    }
+ 
+  }
+
+
+  @media only screen and  (max-width:768px) {
+    .user-button{
+      font-size: 30px;
+    }
+    .sidebar {
+      border-radius: 5px;
+      /* background-color:cadetblue; */
+      background-color: #3f0e40;
+      height: auto;
+  }
+ 
+}
+ 
+
+@media only screen and  (max-width:992px) {
+  /* .user-button{
+    display: flex;
+  justify-content: left;
+  color: white;
+  font-size: 2vw;
+  
+} */
+.user-button{
+  display: flex;
+justify-content: left;
+color: white;
+font-family: 'Arimo', sans-serif;
+font-family: 'Belanosima', sans-serif;
+font-family: 'Hind Madurai', sans-serif;
+font-family: 'Kanit', sans-serif;
+font-family: 'Lexend Peta', sans-serif;
+font-family: 'Mukta', sans-serif;
+font-family: 'Playfair Display', serif;
+font-family: 'Poppins', sans-serif;
+font-family: 'PT Sans', sans-serif;
+font-family: 'Teko', sans-serif;
+font-size: 17px;
+padding: 0px;
+/* font-size: 1vw; */
+
+}
+
+}
+
+@media only screen and  (max-width:1200px) {
+  .user-button{
+    display: flex;
+  justify-content: left;
+  color: white;
+  /* font-size: 1vw; */
+  
+}
+}
+
+ 
+  
+ 
+ 
+  
